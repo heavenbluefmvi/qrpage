@@ -163,7 +163,7 @@
       transform: scale(1.03);
     }
 
-    /* Modal phóng to QR */
+    /* Modal ph篓庐ng to QR */
     .modal {
       display: none;
       position: fixed;
@@ -263,6 +263,8 @@
       }
     }
   </style>
+  <link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#66a6ff">
 </head>
 <body>
   <div class="main-container">
@@ -286,14 +288,14 @@
       </div>
     </div>
 
-    <!-- QR hiển thị -->
+    <!-- QR hi聛6茠9n th聛6鈥�7 -->
     <div class="qr-container">
       <div class="qr-card">
         <img id="qrImage" src="https://i.ibb.co/Kz5Vyx36/2025091819175199.png" alt="QR Code" onclick="openModal()"/>
       </div>
     </div>
 
-    <!-- Modal phóng to QR -->
+    <!-- Modal ph篓庐ng to QR -->
     <div id="qrModal" class="modal">
       <span class="close" onclick="closeModal()">&times;</span>
       <img class="modal-content" id="modalImg">
@@ -307,10 +309,10 @@
 
   <script>
     const qrList = [
-  "/images/vietinbank.png", // Vietinbank
-  "/images/techcom.jpg",    // Techcombank
-  "/images/momo.jpg",       // momo
-  "/images/zalo.jpg"        // Zalo
+  "/imgs/vietinbank.png", // Vietinbank
+  "/imgs/techcom.jpg",    // Techcombank
+  "/imgs/momo.jpg",       // momo
+  "/imgs/zalo.jpg"        // Zalo
 ];
 
     function showQR(index, el) {
@@ -319,7 +321,7 @@
       el.classList.add("active");
     }
 
-    // Modal phóng to QR
+    // Modal ph篓庐ng to QR
     function openModal() {
       const modal = document.getElementById("qrModal");
       const modalImg = document.getElementById("modalImg");
@@ -331,7 +333,7 @@
       document.getElementById("qrModal").style.display = "none";
     }
 
-    // Đóng modal khi click bên ngoài
+    // 聛0聧3篓庐ng modal khi click b篓潞n ngo篓陇i
     window.onclick = function(event) {
       const modal = document.getElementById("qrModal");
       if (event.target === modal) {
@@ -339,5 +341,12 @@
       }
     }
   </script>
+  <script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/service-worker.js')
+    .then(reg => console.log('SW registered', reg))
+    .catch(err => console.warn('SW failed', err));
+}
+</script>
 </body>
 </html>
