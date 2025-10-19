@@ -1,14 +1,14 @@
 // service-worker.js
 const CACHE_NAME = 'qrpage-cache-v1';
 const ASSETS_TO_CACHE = [
-  '/', // root (GitHub Pages sẽ map tới index.html)
-  './index.html',
-  './style.css',      // nếu có
-  './script.js',      // nếu có
-  './imgs/vietinbank.png',
-  './imgs/momo.jpg',
-  './imgs/techcom.jpg',
-  './imgs/zalo.jpg'
+  './', // root (GitHub Pages sẽ map tới index.html)
+  'index.html',
+  'style.css',      // nếu có
+  'script.js',      // nếu có
+  'imgs/vietinbank.png',
+  'imgs/momo.jpg',
+  'imgs/techcom.jpg',
+  'imgs/zalo.jpg'
 ];
 
 // Install - cache all assets
