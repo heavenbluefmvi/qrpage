@@ -7,7 +7,7 @@
   "theme_color": "#66a6ff",
   "icons": [
     {
-      "src": "/imgs/icon-192.png",
+      "src": "imgs/cashless-payment.png",
       "sizes": "192x192",
       "type": "image/png"
     },
