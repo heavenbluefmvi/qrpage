@@ -1,1 +1,187 @@
-# qrpage
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>QR Payment Center</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#66a6ff">
+  <style>
+    :root {
+      --primary-gradient: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+      --glass-bg: rgba(255, 255, 255, 0.2);
+      --glass-border: rgba(255, 255, 255, 0.3);
+      --text-dark: #2d3436;
+    }
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{
+      font-family:'Segoe UI Emoji','Noto Color Emoji','Apple Color Emoji',system-ui,sans-serif;
+      min-height:100vh;display:flex;flex-direction:column;
+      background:linear-gradient(120deg,#89f7fe,#66a6ff,#ff9a9e,#fad0c4);
+      background-size:300% 300%;animation:bgShift 12s ease infinite;
+      padding:20px;color:var(--text-dark)
+    }
+    @keyframes bgShift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+    .main-container{max-width:500px;margin:0 auto;width:100%;display:flex;flex-direction:column;gap:25px}
+    .topbar{display:flex;justify-content:center;align-items:center;background:transparent;backdrop-filter:blur(15px);border:none;box-shadow:none;margin:0 auto;padding:10px;width:100%;gap:10px}
+    .icon-btn{padding:12px;border-radius:16px;background:rgba(255,255,255,0.3);cursor:pointer;transition:all .3s ease;display:flex;flex-direction:column;align-items:center;gap:5px;min-width:65px;position:relative}
+    .icon-btn:hover{transform:translateY(-5px);background:rgba(255,255,255,0.4);box-shadow:0 10px 20px rgba(0,0,0,.1)}
+    .icon-btn.active{background:linear-gradient(135deg,#6a11cb 0%,#2575fc 100%);color:#fff;box-shadow:0 8px 25px rgba(37,117,252,.4)}
+    .icon-btn i{font-size:20px}
+    .icon-btn span{font-size:11px;font-weight:500}
+    .mini-logo{position:absolute;bottom:6px;right:6px;width:16px;height:16px;border-radius:50%;overflow:hidden;border:1px solid rgba(255,255,255,.6)}
+    .mini-logo img{width:100%;height:100%;object-fit:cover}
+    .qr-container{flex:1;display:flex;justify-content:center;align-items:center;perspective:1000px}
+    .qr-card{padding:30px;border-radius:24px;background:var(--glass-bg);backdrop-filter:blur(30px);border:2px solid var(--glass-border);box-shadow:0 15px 35px rgba(0,0,0,.2);transition:transform .5s ease,box-shadow .5s ease;position:relative;overflow:hidden}
+    .qr-card::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:linear-gradient(to bottom right,rgba(255,255,255,.1),rgba(255,255,255,0));transform:rotate(30deg);pointer-events:none}
+    .qr-card:hover{transform:translateY(-10px) rotateX(5deg) rotateY(-5deg);box-shadow:0 20px 40px rgba(0,0,0,.25)}
+    .qr-card img{width:250px;height:250px;border-radius:10px;transition:transform .3s ease;box-shadow:0 5px 15px rgba(0,0,0,.1);cursor:pointer}
+    .qr-card img:hover{transform:scale(1.03)}
+    .modal{display:none;position:fixed;z-index:1000;left:0;top:0;width:100%;height:100%;background-color:rgba(0,0,0,.8);backdrop-filter:blur(5px);justify-content:center;align-items:center;animation:fadeIn .3s ease}
+    .modal-content{max-width:90%;max-height:90%;border-radius:16px;box-shadow:0 20px 50px rgba(0,0,0,.5);animation:zoomIn .3s ease}
+    .close{position:absolute;top:20px;right:30px;color:white;font-size:40px;font-weight:bold;cursor:pointer;transition:color .3s}
+    .close:hover{color:#ff6b6b}
+    @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+    @keyframes zoomIn{from{transform:scale(.8);opacity:0}to{transform:scale(1);opacity:1}}
+    footer{text-align:center;padding:20px;font-size:16px;font-weight:500;background:linear-gradient(90deg,#ff7eb3,#65d5ff,#9dff65);background-size:300% 300%;color:#fff;animation:gradientShift 6s ease infinite;border-radius:16px;margin-top:20px;box-shadow:0 5px 15px rgba(0,0,0,.1);transition:transform .3s ease}
+    footer:hover{transform:translateY(-3px)}
+    @keyframes gradientShift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+    .heart{color:#ff6b6b;display:inline-block;animation:pulse 1.5s infinite}
+    @keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.2)}100%{transform:scale(1)}}
+    @media (max-width:600px){.topbar{flex-wrap:wrap}.icon-btn{min-width:55px;padding:8px}.qr-card img{width:200px;height:200px}}
+  </style>
+</head>
+<body>
+  <div class="main-container">
+    <div class="topbar">
+      <div class="icon-btn active" onclick="showQR(0, this)"><i class="fas fa-qrcode"></i><span>VietinBank</span></div>
+      <div class="icon-btn" onclick="showQR(1, this)"><i class="fas fa-university"></i><span>Techcombank</span></div>
+      <div class="icon-btn" onclick="showQR(2, this)"><i class="fas fa-money-bill-wave"></i><span>MoMo</span></div>
+      <div class="icon-btn" onclick="showQR(3, this)"><i class="fas fa-comments"></i><span>ZaloPay</span></div>
+    </div>
+
+    <div class="qr-container">
+      <div class="qr-card">
+        <img id="qrImage" src="imgs/vietinbank.png" alt="QR Code" onclick="openModal()"/>
+      </div>
+    </div>
+
+    <div id="qrModal" class="modal">
+      <span class="close" onclick="closeModal()">&times;</span>
+      <img class="modal-content" id="modalImg">
+    </div>
+
+    <footer>
+      <span class="heart">❤️</span> Thank you! I'm grateful <span class="heart">❤️</span> Please rate me ⭐⭐⭐⭐⭐
+    </footer>
+  </div>
+
+  <script>
+    const qrList = [
+      "imgs/vietinbank.png",
+      "imgs/techcom.jpg",
+      "imgs/momo.jpg",
+      "imgs/zalo.jpg"
+    ];
+
+    function showQR(index, el) {
+      document.getElementById("qrImage").src = qrList[index] + '?v=1';
+      document.querySelectorAll(".icon-btn").forEach(btn => btn.classList.remove("active"));
+      el.classList.add("active");
+    }
+
+    function openModal() {
+      const modal = document.getElementById("qrModal");
+      const modalImg = document.getElementById("modalImg");
+      modal.style.display = "flex";
+      modalImg.src = document.getElementById("qrImage").src;
+    }
+
+    function closeModal() {
+      document.getElementById("qrModal").style.display = "none";
+    }
+
+    window.onclick = function(event) {
+      const modal = document.getElementById("qrModal");
+      if (event.target === modal) {
+        closeModal();
+      }
+    }
+  </script>
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js')
+        .then(reg => console.log('SW registered', reg))
+        .catch(err => console.warn('SW failed', err));
+    }
+  </script>
+  <!-- Nút thông tin phiên bản -->
+<div class="info-icon" title="Phiên bản 1.0">i</div>
+
+<style>
+  .info-icon {
+    position: fixed;
+    bottom: 12px;
+    left: 12px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #007bff, #00c6ff);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-family: system-ui, sans-serif;
+    font-size: 14px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    cursor: pointer;
+    transition: 0.25s ease;
+    z-index: 999;
+  }
+
+  .info-icon:hover {
+    transform: scale(1.15);
+    background: linear-gradient(135deg, #0056b3, #008cff);
+  }
+
+  .tooltip {
+    position: fixed;
+    bottom: 45px;
+    left: 12px;
+    background: rgba(0,0,0,0.85);
+    color: #fff;
+    padding: 6px 10px;
+    border-radius: 8px;
+    font-size: 13px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    z-index: 1000;
+    white-space: nowrap;
+  }
+
+  .tooltip.show {
+    opacity: 1;
+    pointer-events: all;
+  }
+</style>
+
+<script>
+  // Tạo tooltip
+  const tooltip = document.createElement("div");
+  tooltip.className = "tooltip";
+  tooltip.textContent = "QRPage v1.0 — Offline Mode OK ✅";
+  document.body.appendChild(tooltip);
+
+  // Sự kiện click vào icon
+  const icon = document.querySelector(".info-icon");
+  icon.addEventListener("click", () => {
+    tooltip.classList.toggle("show");
+    setTimeout(() => tooltip.classList.remove("show"), 2500);
+  });
+</script>
+</body>
+</html>
