@@ -117,5 +117,71 @@
         .catch(err => console.warn('SW failed', err));
     }
   </script>
+  <!-- Nút thông tin phiên bản -->
+<div class="info-icon" title="Phiên bản 1.0">i</div>
+
+<style>
+  .info-icon {
+    position: fixed;
+    bottom: 12px;
+    left: 12px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #007bff, #00c6ff);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-family: system-ui, sans-serif;
+    font-size: 14px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    cursor: pointer;
+    transition: 0.25s ease;
+    z-index: 999;
+  }
+
+  .info-icon:hover {
+    transform: scale(1.15);
+    background: linear-gradient(135deg, #0056b3, #008cff);
+  }
+
+  .tooltip {
+    position: fixed;
+    bottom: 45px;
+    left: 12px;
+    background: rgba(0,0,0,0.85);
+    color: #fff;
+    padding: 6px 10px;
+    border-radius: 8px;
+    font-size: 13px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    z-index: 1000;
+    white-space: nowrap;
+  }
+
+  .tooltip.show {
+    opacity: 1;
+    pointer-events: all;
+  }
+</style>
+
+<script>
+  // Tạo tooltip
+  const tooltip = document.createElement("div");
+  tooltip.className = "tooltip";
+  tooltip.textContent = "QRPage v1.0 — Offline Mode OK ✅";
+  document.body.appendChild(tooltip);
+
+  // Sự kiện click vào icon
+  const icon = document.querySelector(".info-icon");
+  icon.addEventListener("click", () => {
+    tooltip.classList.toggle("show");
+    setTimeout(() => tooltip.classList.remove("show"), 2500);
+  });
+</script>
 </body>
 </html>
